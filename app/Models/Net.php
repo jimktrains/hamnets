@@ -13,7 +13,7 @@ class Net extends Model
 
   public function scopeOrderInTz($query, $timezone)
   {
-    return $query->orderByRaw("extract(hour from (current_date + start_time) at time zone timezone at time zone 'America/New_York')");
+    return $query->orderByRaw("extract(hour from (current_date + start_time) at time zone timezone at time zone ?)", $timezone);
   }
 
   public function format_primary_frequency()
