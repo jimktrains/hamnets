@@ -18,9 +18,10 @@ class CreateBandTable extends Migration
         band_id serial not null primary key,
         frequencies int4range not null,
         name text not null,
-        country text not null,
+        country text not null
       )");
 
+        DB::connection()->getPdo()->exec("create view netwithband as select net.*, b.name as band from net join band b on primary_frequency <@ frequencies");
         DB::connection()->getPdo()->exec("drop materialized view if exists nextnet");
         DB::connection()->getPdo()->exec("create materialized view nextnet as
 select net_id,
