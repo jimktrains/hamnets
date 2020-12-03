@@ -14,6 +14,11 @@ class NextNet extends Net
     return $query->whereRaw("(current_timestamp between start_timestamp and end_timestamp or start_timestamp between current_timestamp and current_timestamp + make_interval(hours := ?::integer))", $hours);
   }
 
+  public function scopeOngoing($query)
+  {
+    return $query->whereRaw("(current_timestamp between start_timestamp and end_timestamp)");
+  }
+
   public function scopeForTz($query, $timezone)
   {
     return $query->selectRaw("net_id,

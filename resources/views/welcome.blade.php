@@ -47,6 +47,18 @@
       .nav form {
         display: inline-block;
       }
+
+      #upcoming-nets {
+        width: 49%;
+        float: left
+        }
+      #current-nets {
+        width: 49%;
+        float: right;
+        }
+      #all-nets {
+        clear: both;
+      }
     </style>
     <script>
       // HamGridSquare.js
@@ -194,7 +206,7 @@
       <table>
         <thead>
           <tr>
-            <th>Id</th>
+            <!--<th>Id</th>-->
             <th>Name</th>
             <th>Band</th>
             <th>Frequency</th>
@@ -204,7 +216,32 @@
         </thead>
         @foreach($NextNets as $Net)
           <tr>
-            <td>{{$Net->net_id}}</td>
+            <!-- <td>{{$Net->net_id}}</td>-->
+            <td>{{$Net->name}}</td>
+            <td>{{$Net->band}}</td>
+            <td class="frequency">{{$Net->format_primary_frequency()}}</td>
+            <td>{{$Net->start_time}}</td>
+            <td class="{{$Net->end_timestamp_is_estimated ? 'estimated' : ''}}" title="{{$Net->end_timestamp_is_estimated ? 'estimated end time' : ''}}">{{$Net->end_time}}</td>
+          </tr>
+        @endforeach
+      </table>
+    </div>
+    <div id="current-nets">
+      <h1>Current Nets</h1>
+      <table>
+        <thead>
+          <tr>
+            <!--<th>Id</th>-->
+            <th>Name</th>
+            <th>Band</th>
+            <th>Frequency</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+          </tr>
+        </thead>
+        @foreach($NowNets as $Net)
+          <tr>
+           <!--<td>{{$Net->net_id}}</td>-->
             <td>{{$Net->name}}</td>
             <td>{{$Net->band}}</td>
             <td class="frequency">{{$Net->format_primary_frequency()}}</td>

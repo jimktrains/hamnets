@@ -86,11 +86,18 @@ Route::get('/', function (Request $Request) {
     ->orderby('start_timestamp')
     ->get();
 
+  $NowNets = NextNet::forTz($timezone)
+    ->ongoing()
+    ->when($selectedBands, $filterBand)
+    ->orderby('primary_frequency')
+    ->get();
+
   return view(
       'welcome',
       compact(
           'Nets',
           'NextNets',
+          'NowNets',
           'timezone',
           'timezones',
           'hoursAhead',
