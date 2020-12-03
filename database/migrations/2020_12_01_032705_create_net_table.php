@@ -23,11 +23,12 @@ class CreateNetTable extends Migration
             $table->text("url")->nullable();
             $table->integer("primary_frequency");
             $table->integer("secondary_frequency")->nullable();
-            $table->text("mode");
-            $table->time("start_time");
+            $table->text("mode")->nullable();
+            $table->time("start_time")->nullable();
             $table->time("end_time")->nullable();
-            $table->text("timezone");
-            $table->text("recurrence_rule");
+            $table->text("timezone")->nullable();
+            $table->text("recurrence_rule")->nullable();
+
             $table->boolean("active");
 
             $table->boolean("national_traffic_affiliated");
