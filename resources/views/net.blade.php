@@ -14,6 +14,10 @@
   margin-bottom: 20px;
   border-bottom: 1px black solid;
 }
+      #footer {
+        margin-top: 20px;
+        border-top: 1px black solid;
+      }
       #map {
 			width: 800px;
 			height: 600px;
@@ -142,6 +146,7 @@
         @endif
         </div>
         <div id='map'></div>
+	<div><small>Coverage is only estimated. Exact coverage depends on conditions, transmitter power, antenna parameters, &amp;c.</small></div>
   <script>
     var map = new ol.Map({
       target: 'map',
@@ -173,6 +178,18 @@
       })
     });
   </script>
+    </div>
+    <div id="footer">
+      <div><a href="mailto:info@hamnets.org">Contact</a></div>
+      <div>Please reach out to update or add nets, or to suggest features.</a>
+      <hr>
+      <div>
+        <h1>Other Resources</h1>
+        <ul>
+          <li><a href="https://docs.google.com/spreadsheets/d/1cpaIUPJOG9Kdb0Xo-hyzhcVKcyvOr37vrGIF1mIETHs/edit#gid=906307814">N1YZ HF NET_LIST</a></li>
+          <li><a href="http://www.arrl.org/resources/nets/">ARRL ONLINE NET DIRECTORY</a></li>
+          <li><a href="http://repeaterbook.com">RepeaterBook</a></li>
+        </ul>
     </div>
   </body>
 </html>
