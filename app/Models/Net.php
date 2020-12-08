@@ -44,13 +44,13 @@ class Net extends Model
   WHERE net_id = ?
     and ST_Transform(geom, 3857) && ST_TileEnvelope(?, ?, ?)
   union all
-  SELECT st_setsrid(ST_AsMVTGeom(ST_Transform(st_buffer(maidenhead2centroid(primary_repeater_gridsquare), 1.0, 16), 3857), ST_TileEnvelope(?, ?, ?)), 0) AS geom,
+  SELECT st_setsrid(ST_AsMVTGeom(ST_Transform(st_buffer(maidenhead2centroid(primary_repeater_gridsquare), 0.75, 16), 3857), ST_TileEnvelope(?, ?, ?)), 0) AS geom,
          primary_repeater_gridsquare,
          null,
          'gridsquare-buffer'
   FROM net
   WHERE net_id = ?
-    and st_transform(st_buffer(maidenhead2centroid(primary_repeater_gridsquare), 1.0, 16), 3875) && ST_TileEnvelope(?, ?, ?)
+    and st_transform(st_buffer(maidenhead2centroid(primary_repeater_gridsquare), 0.75, 16), 3857) && ST_TileEnvelope(?, ?, ?)
   union all
   SELECT st_setsrid(ST_AsMVTGeom(ST_Transform(st_buffer(maidenhead2centroid(secondary_repeater_gridsquare), 0.75, 16), 3857), ST_TileEnvelope(?, ?, ?)), 0) AS geom,
          secondary_repeater_gridsquare,
