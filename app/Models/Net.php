@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Net extends Model
 {
@@ -27,6 +28,43 @@ class Net extends Model
         ->OrWhereRaw("st_buffer(maidenhead2centroid(primary_repeater_gridsquare), 1.0, 16) && maidenhead2bbox(?)", $gridsquare)
         ->OrWhereRaw("st_buffer(maidenhead2centroid(secondary_repeater_gridsquare), 1.0, 16) && maidenhead2bbox(?)", $gridsquare)
         ->orderBy('netwithband.net_id');
+  }
+
+  public function getTile($zoom, $x, $y, $gridsquare)
+  {
+    $res = DB::select("
+    WITH mvtgeom AS
+(
+  SELECT st_setsrid(ST_AsMVTGeom(ST_Transform(geom, 3857), ST_TileEnvelope(?, ?, ?)), 0) AS geom,
+         name_0,
+         name_1,
+         engtype_1
+  FROM gadm36
+  join coverage on gadm36.gid = coverage.gid
+  WHERE net_id = ?
+    and ST_Transform(geom, 3857) && ST_TileEnvelope(?, ?, ?)
+  union all
+  SELECT st_setsrid(ST_AsMVTGeom(ST_Transform(st_buffer(maidenhead2centroid(primary_repeater_gridsquare), 1.0, 16), 3857), ST_TileEnvelope(?, ?, ?)), 0) AS geom,
+         primary_repeater_gridsquare,
+         null,
+         'gridsquare-buffer'
+  FROM net
+  WHERE net_id = ?
+    and st_transform(st_buffer(maidenhead2centroid(primary_repeater_gridsquare), 1.0, 16), 3875) && ST_TileEnvelope(?, ?, ?)
+  union all
+  SELECT st_setsrid(ST_AsMVTGeom(ST_Transform(st_buffer(maidenhead2centroid(secondary_repeater_gridsquare), 0.75, 16), 3857), ST_TileEnvelope(?, ?, ?)), 0) AS geom,
+         secondary_repeater_gridsquare,
+         null,
+         'gridsquare-buffer'
+  FROM net
+  WHERE net_id = ?
+    and st_transform(st_buffer(maidenhead2centroid(secondary_repeater_gridsquare), 0.75, 16), 3857) && ST_TileEnvelope(?, ?, ?)
+)
+SELECT ST_AsMVT(mvtgeom.*)
+FROM mvtgeom;
+", [$zoom, $x,$y, $this->net_id, $zoom, $x, $y, $zoom, $x, $y, $this->net_id, $zoom, $x, $y, $zoom, $x, $y, $this->net_id, $zoom, $x, $y,]);
+    $mvtgeom = stream_get_contents($res[0]->st_asmvt);
+    return $mvtgeom;
   }
 
   public function primary_frequency_repeaterbook_url()

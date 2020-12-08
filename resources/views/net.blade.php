@@ -5,11 +5,19 @@
 
     <title>{{$Net->name}} -- Ham Net Database</title>
 
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/css/ol.css">
+
+
     <style>
 #header {
   margin-bottom: 20px;
   border-bottom: 1px black solid;
 }
+      #map {
+			width: 800px;
+			height: 600px;
+		}
 
       #description {
         margin-top: 2em;
@@ -133,6 +141,38 @@
           </ul>
         @endif
         </div>
+        <div id='map'></div>
+  <script>
+    var map = new ol.Map({
+      target: 'map',
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM()
+        }),
+        new ol.layer.VectorTile({
+          source: new ol.source.VectorTile({
+            format: new ol.format.MVT(),
+            url: "/net/{{$Net->net_id}}/tiles/{z}/{x}/{y}",
+          }),
+          style: function(feature, res) {
+            return new ol.style.Style({
+              fill: new ol.style.Fill({
+                color: 'rgba(0, 102, 204, 0.2)'
+              }),
+              stroke: new ol.style.Stroke({
+                width: 2,
+                color: 'rgba(0, 102, 204)'
+              })
+            });
+          },
+        })
+      ],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([-90, 40]),
+        zoom: 4
+      })
+    });
+  </script>
     </div>
   </body>
 </html>

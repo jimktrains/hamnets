@@ -39,6 +39,17 @@ Route::get('/csv', function (Request $Request) {
   }
 });
 
+Route::get('/net/{net_id}/tiles/{x}/{y}/{z}', function (Request $Request, $net_id, $x, $y, $z) {
+  $Net = Net::where('net_id', $net_id)->first();
+  if (empty($Net))
+  {
+    throw new ModelNotFoundException;
+  }
+  $gridsquare = $Request->input("gridsquare", $Request->session()->get("gridsquare"));
+
+  return $Net->getTile($x, $y, $z, $gridsquare);
+})->name('net_map_tile');
+
 Route::get('/net/{net_id}', function (Request $Request, $net_id) {
   $Net = Net::where('net_id', $net_id)->first();
   if (empty($Net))
