@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Net;
 use App\Models\NextNet;
 use App\Models\Band;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /*
  |--------------------------------------------------------------------------
@@ -38,9 +39,28 @@ Route::get('/csv', function (Request $Request) {
   }
 });
 
+Route::get('/net/{net_id}', function (Request $Request, $net_id) {
+  $Net = Net::where('net_id', $net_id)->first();
+  if (empty($Net))
+  {
+    throw new ModelNotFoundException;
+  }
+
+  return view(
+      'net',
+      compact('Net')
+  );
+
+})->name('net');
+
 Route::get('/', function (Request $Request) {
   $timezone = $Request->input("timezone", $Request->session()->get("timezone", "America/New_York"));
   $Request->session()->put("timezone", $timezone);
+
+  $gridsquare = $Request->input("gridsquare", $Request->session()->get("gridsquare"));
+  if (!empty($gridsquare)) {
+    $Request->session()->put("gridsquare", $gridsquare);
+  }
 
   $hoursAhead = $Request->input('hours_ahead', $Request->session()->get("hours_ahead", 1));
   $Request->session()->put("hours_ahead", $hoursAhead);
@@ -92,12 +112,20 @@ Route::get('/', function (Request $Request) {
     ->orderby('primary_frequency')
     ->get();
 
+  $CoverageNets = null;
+  if (!empty($gridsquare)) {
+    $CoverageNets = Net::whereGridSquare('EN90xj')
+                    ->get();
+  }
+
   return view(
       'welcome',
       compact(
           'Nets',
           'NextNets',
           'NowNets',
+          'CoverageNets',
+          'gridsquare',
           'timezone',
           'timezones',
           'hoursAhead',
@@ -107,4 +135,4 @@ Route::get('/', function (Request $Request) {
           'selectedBands'
       )
   );
-});
+})->name('home');
