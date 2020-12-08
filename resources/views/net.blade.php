@@ -113,6 +113,9 @@
         @if (!empty($Net->arrl_section))
           <div>ARRL Section: {{$Net->arrl_section}}</div>
         @endif
+        @if (!empty($Net->arrl_coverage))
+          <div>ARRL Coverage: {{$Net->arrl_coverage}}</div>
+        @endif
         @if (!empty($Net->arrl_traffic_handling))
           <div>ARRL Traffic Handling: {{$Net->arrl_traffic_handling}}</div>
         @endif
