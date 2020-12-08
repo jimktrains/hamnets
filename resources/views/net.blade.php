@@ -33,11 +33,13 @@
             (<a href="{{$Net->primary_frequency_repeaterbook_url()}}"><abbr title="RepeaterBook">RB</abbr></a>)
           @endif
         </li>
+        @if (!empty($Net->secondary_frequency))
         <li>{{$Net->format_secondary_frequency()}} Hz
           @if (!empty($Net->secondary_frequency_repeaterbook_url()))
             (<a href="{{$Net->secondary_frequency_repeaterbook_url()}}"><abbr title="RepeaterBook">RB</abbr></a>)
           @endif
         </li>
+        @endif
       </ol>
 
       @if (!empty($Net->url))
