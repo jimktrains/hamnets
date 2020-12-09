@@ -175,10 +175,10 @@
 
     <div id="footer">
       <div><a href="mailto:info@hamnets.org">Contact</a></div>
-      <div>Please reach out to update or add nets, or to suggest features.</a>
+      <div>{{trans('common.reach_out')}}</div>
       <hr>
       <div>
-        <h1>Other Resources</h1>
+        <h1>{{trans('common.other_resources')}}</h1>
         <ul>
           <li><a href="https://docs.google.com/spreadsheets/d/1cpaIUPJOG9Kdb0Xo-hyzhcVKcyvOr37vrGIF1mIETHs/edit#gid=906307814">N1YZ HF NET_LIST</a></li>
           <li><a href="http://www.arrl.org/resources/nets/">ARRL ONLINE NET DIRECTORY</a></li>

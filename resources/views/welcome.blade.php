@@ -1,6 +1,6 @@
 @extends('base')
 
-@section('title', 'Upcoming Nets')
+@section('title', trans('common.upcoming_nets'))
 
 @section('content')
     <div class="nav">
@@ -10,11 +10,11 @@
               <option value="{{$tz}}" {{($tz==$timezone) ? "selected=selected" : ""}}>{{$tz}}</option>
             @endforeach
           </select>  |
-          <label for="gridsquare">Grid Square</label>
+          <label for="gridsquare">{{trans('common.grid_square')}}</label>
           <input type="text" id="gridsquare" name="gridsquare" value="{{$gridsquare}}" maxlength=6>
           <input type="button" onclick="getGridSquare()" value="Get Grid Square" />
         |
-          <label for="hours_ahead">Hours to Look Ahead</label>
+          <label for="hours_ahead">{{trans('common.hours_look_ahead')}}</label>
           <select id="hours_ahead" name="hours_ahead">
             @for($h = 1; $h < 24; $h++)
               <option value="{{$h}}" {{($h==$hoursAhead) ? "selected=selected" : ""}}>{{$h}}</option>
@@ -29,13 +29,13 @@
             <input type="checkbox" id="band_{{$band}}" name="bands[]" value="{{$band}}" {{in_array($band, $selectedBands) ? "checked=checked" : ""}}>
             <label for="band_{{$band}}">{{$band}}</label>&nbsp;
           @endforeach
-          <input type="submit" value="Update">
+          <input type="submit" value="{{trans('common.search')}}">
         </form>
       </div>
 
     </div>
     <div id="upcoming-nets">
-      <h2>Upcoming</h2>
+      <h2>{{trans('common.upcoming')}}</h2>
       <!--
       <div class="freq-bar">
         @foreach($NextNets as $Net)
@@ -53,75 +53,23 @@
       </div>
       -->
 
-      <table>
-        <thead>
-          <tr>
-            <!--<th>Id</th>-->
-            <th>Name</th>
-            <th>Band</th>
-            <th>Frequency</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-          </tr>
-        </thead>
-        @foreach($NextNets as $Net)
-          <tr>
-            <!-- <td>{{$Net->net_id}}</td>-->
-            <td>{{$Net->name}}
-            @if (!empty($Net->url))
-              <small>(<a href="{{$Net->url}}">www</a>)</small>
-            @endif
-            <small>(<a href="{{route('net', $Net->net_id)}}">hnd</a>)</small>
-            </td>
-            <td>{{$Net->band}}</td>
-            <td class="frequency">{{$Net->format_primary_frequency()}}</td>
-            <td>{{$Net->start_time}}</td>
-            <td class="{{$Net->end_timestamp_is_estimated ? 'estimated' : ''}}" title="{{$Net->end_timestamp_is_estimated ? 'estimated end time' : ''}}">{{$Net->end_time}}</td>
-          </tr>
-        @endforeach
-      </table>
+      <x-net-compact-table :nets="$NextNets" />
     </div>
     <div id="current-nets">
-      <h1>Current Nets</h1>
-      <table>
-        <thead>
-          <tr>
-            <!--<th>Id</th>-->
-            <th>Name</th>
-            <th>Band</th>
-            <th>Frequency</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-          </tr>
-        </thead>
-        @foreach($NowNets as $Net)
-          <tr>
-           <!--<td>{{$Net->net_id}}</td>-->
-            <td>{{$Net->name}}
-            @if (!empty($Net->url))
-              <small>(<a href="{{$Net->url}}">www</a>)</small>
-            @endif
-            <small>(<a href="{{route('net', $Net->net_id)}}">hnd</a>)</small>
-            </td>
-            <td>{{$Net->band}}</td>
-            <td class="frequency">{{$Net->format_primary_frequency()}}</td>
-            <td>{{$Net->start_time}}</td>
-            <td class="{{$Net->end_timestamp_is_estimated ? 'estimated' : ''}}" title="{{$Net->end_timestamp_is_estimated ? 'estimated end time' : ''}}">{{$Net->end_time}}</td>
-          </tr>
-        @endforeach
-      </table>
+      <h1>{{trans('common.current')}}</h1>
+      <x-net-compact-table :nets="$NowNets" />
     </div>
 
     @if (!empty($CoverageNets))
     <div id="coverage-nets">
-      <h2>Coverage Nets for {{$gridsquare}}</h2>
+      <h2>{{trans('common.coverage_for', ['gridsquare' => $gridsquare])}}</h2>
       <x-net-full-table :nets="$CoverageNets" />
     </div>
     @endif
 
     <div id="solar">
       <div>
-        <h1>Solar Activity</h1>
+        <h1>{{trans('common.solar_activity')}}</h1>
         <center>
           <a href="http://www.hamqsl.com/solar.html" title="Click to add Solar-Terrestrial Data to your website!"><img src="http://www.hamqsl.com/solar101vhfpic.php"></a>
         </center>

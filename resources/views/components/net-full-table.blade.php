@@ -2,19 +2,19 @@
   <table class="nets">
     <thead>
       <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Band</th>
-        <th>Frequency</th>
-        <th>Start Time</th>
-        <th>End Time</th>
-        <th>Timezone</th>
-        <th colspan=7>Operating Days</th>
+        <th>{{trans('common.id')}}</th>
+        <th>{{trans('common.name')}}</th>
+        <th>{{trans('common.band')}}</th>
+        <th>{{trans('common.frequency')}}</th>
+        <th>{{trans('common.start_time')}}</th>
+        <th>{{trans('common.end_time')}}</th>
+        <th>{{trans('common.timezone')}}</th>
+        <th colspan=7>{{trans('common.operating_days')}}</th>
       </tr>
     </thead>
     <tbody>
       @foreach($Nets as $Net)
-        <tr class="{{$Net->active ? "" : "inactive"}}" title="{{$Net->active ? "" : "inactive"}}">
+        <tr class="{{$Net->active ? "" : "inactive"}}" title="{{$Net->active ? "" : trans('common.inactive')}}">
           <td class="net_id"><a href="{{route('net', $Net->net_id)}}">{{$Net->net_id}}</a></td>
           <td>{{$Net->name}}
             @if(!empty($Net->description))
@@ -32,7 +32,7 @@
             @endif
             @if($Net->arrl_national_traffic_affiliated))
               <br>
-              <small class="national_traffic_affiliated"><abbr title="National Traffic System">NTS</abbr></small>
+              <small class="national_traffic_affiliated"><a href="http://www.arrl.org/nts"><abbr title="{{trans('common.nts')}}">NTS</abbr></a></small>
             @endif
             <td>{{$Net->band}}
               <td class="frequency">{{$Net->format_primary_frequency()}}
@@ -49,13 +49,13 @@
               <td>{{$Net->start_time}}</td>
               <td>{{$Net->end_time}}</td>
               <td>{{$Net->timezone}}</td>
-              <td>{!!$Net->sunday     ? '<abbr title="Sunday">S</abbr>' : "" !!} </td>
-              <td>{!!$Net->monday     ? '<abbr title="Monday">M</abbr>' : "" !!} </td>
-              <td>{!!$Net->tuesday    ? '<abbr title="Tuesday">T</abbr>' : "" !!} </td>
-              <td>{!!$Net->wednesday  ? '<abbr title="Wednesday">W</abbr>' : "" !!} </td>
-              <td>{!!$Net->thursday   ? '<abbr title="Thursday">H</abbr>' : "" !!} </td>
-              <td>{!!$Net->friday     ? '<abbr title="Friday">F</abbr>' : "" !!} </td>
-              <td>{!!$Net->saturday   ? '<abbr title="Saturday">A</abbr>' : "" !!} </td>
+              <td>{!!$Net->sunday     ? '<abbr title="'.trans('common.sunday').'">'.trans('common.sunday_short').'</abbr>' : "" !!} </td>
+              <td>{!!$Net->monday     ? '<abbr title="'.trans('common.monday').'">'.trans('common.monday_short').'</abbr>' : "" !!} </td>
+              <td>{!!$Net->tuesday    ? '<abbr title="'.trans('common.tuesday').'">'.trans('common.tuesday_short').'</abbr>' : "" !!} </td>
+              <td>{!!$Net->wednesday  ? '<abbr title="'.trans('common.wednesday').'">'.trans('common.wednesday_short').'</abbr>' : "" !!} </td>
+              <td>{!!$Net->thursday   ? '<abbr title="'.trans('common.thursday').'">'.trans('common.thursday_short').'</abbr>' : "" !!} </td>
+              <td>{!!$Net->friday     ? '<abbr title="'.trans('common.friday').'">'.trans('common.friday_short').'</abbr>' : "" !!} </td>
+              <td>{!!$Net->saturday   ? '<abbr title="'.trans('common.saturday').'">'.trans('common.saturday_short').'</abbr>' : "" !!} </td>
         </tr>
       @endforeach
     </tbody>

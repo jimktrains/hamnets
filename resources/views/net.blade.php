@@ -56,37 +56,37 @@
         <ul>
           @if ($Net->sunday)
             <li>
-              Sunday
+              {{trans('common.sunday')}}
             </li>
           @endif
           @if ($Net->monday)
             <li>
-              Monday
+              {{trans('common.monday')}}
             </li>
           @endif
           @if ($Net->tuesday)
             <li>
-              Tuesday
+              {{trans('common.tuesday')}}
             </li>
           @endif
           @if ($Net->wednesday)
             <li>
-              Wednesday
+              {{trans('common.wednesday')}}
             </li>
           @endif
           @if ($Net->thursday)
             <li>
-              Thursday
+              {{trans('common.thursday')}}
             </li>
           @endif
           @if ($Net->friday)
             <li>
-              Friday
+              {{trans('common.friday')}}
             </li>
           @endif
           @if ($Net->saturday)
             <li>
-              Saturday
+              {{trans('common.saturday')}}
             </li>
           @endif
         </ul>
@@ -124,7 +124,7 @@
 
 
       @if (0 != $Net->Coverage()->count())
-        <h2>Intended Coverage</h2>
+        <h2>{{trans('common.intended_coverage')}}</h2>
         <ul>
           @foreach ($Net->Coverage()->get() as $Gadm)
             <li>{{$Gadm->name_0}} > {{$Gadm->name_1}}</li>
@@ -133,8 +133,8 @@
       @endif
       </div>
       <div id='map'></div>
-      <div><small>Coverage is only estimated. Exact coverage depends on conditions, transmitter power, antenna parameters, &amp;c.</small></div>
-      <div><a href="mailto:info@hamnets.org?subject=Problem Report for #{{$Net->net_id}}: {{$Net->name}}">Report a problem or inaccuracy</a></div>
+      <div><small>{{trans('common.coverage_disclaimer')}}</small></div>
+      <div><a href="mailto:info@hamnets.org?subject=Problem Report for #{{$Net->net_id}}: {{$Net->name}}">{{trans('common.report_inaccuracy')}}</a></div>
       <script>
         var map = new ol.Map({
           target: 'map',
