@@ -185,7 +185,7 @@
     </div>
     <div id="filters">
       <form>
-        <label for="timezone">Display Timezone</label>
+        <label for="timezone">Sort Timezone</label>
         <select id="timezone" name="timezone">
           @foreach($timezones as $tz)
             <option value="{{$tz}}" {{($tz==$timezone) ? "selected=selected" : ""}}>{{$tz}}</option>
