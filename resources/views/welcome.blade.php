@@ -10,6 +10,7 @@
         width: 6em;
       }
       #solar {
+        clear: both;
         margin-top: 20px;
         border-top: 1px black solid;
       }
