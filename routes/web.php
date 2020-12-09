@@ -66,9 +66,7 @@ Route::get('/net', function (Request $Request) {
   $Request->session()->put("timezone", $timezone);
 
   $gridsquare = $Request->input("gridsquare", $Request->session()->get("gridsquare"));
-  if (!empty($gridsquare)) {
-    $Request->session()->put("gridsquare", $gridsquare);
-  }
+  $Request->session()->put("gridsquare", $gridsquare);
 
   $selectedBands = $Request->input('bands', $Request->session()->get('bands', []));
   if (in_array('all', $selectedBands)) {
@@ -128,9 +126,7 @@ Route::get('/', function (Request $Request) {
   $Request->session()->put("timezone", $timezone);
 
   $gridsquare = $Request->input("gridsquare", $Request->session()->get("gridsquare"));
-  if (!empty($gridsquare)) {
-    $Request->session()->put("gridsquare", $gridsquare);
-  }
+  $Request->session()->put("gridsquare", $gridsquare);
 
   $hoursAhead = $Request->input('hours_ahead', $Request->session()->get("hours_ahead", 1));
   $Request->session()->put("hours_ahead", $hoursAhead);
