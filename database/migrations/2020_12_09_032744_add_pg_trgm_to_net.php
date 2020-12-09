@@ -14,7 +14,7 @@ class AddPgTrgmToNet extends Migration
      */
     public function up()
     {
-      DB::connection()->getPdo()->exec("create extension pg_trgm");
+      DB::connection()->getPdo()->exec("create extension if not exists pg_trgm");
       DB::connection()->getPdo()->exec("create index net_name_trgm_idx on net using gist (name gist_trgm_ops)");
     }
 
