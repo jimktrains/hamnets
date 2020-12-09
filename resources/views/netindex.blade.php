@@ -3,15 +3,30 @@
   <head>
     <meta charset="utf-8">
 
-    <title>Ham Net Database</title>
+    <title>Net Index -- Ham Net Database</title>
+
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/css/ol.css">
+
 
     <style>
-      #gridsquare{
-        width: 6em;
+      #header {
+        margin-bottom: 20px;
+        border-bottom: 1px black solid;
       }
-      #solar {
+      #footer {
         margin-top: 20px;
         border-top: 1px black solid;
+      }
+      #map {
+        width: 800px;
+        height: 600px;
+      }
+      #description {
+        margin-top: 2em;
+      }
+      .frequencies {
+        list-style-type: upper-alpha;
       }
       #footer {
         margin-top: 20px;
@@ -166,120 +181,36 @@
   </head>
   <body>
     <div id="header">
-      <a href="{{route('home')}}">Home</a> | <a href="{{route('net.index')}}">Net Index</a>
+      <a href="{{route('home')}}">Home</a>
     </div>
-    <div class="nav">
-      <div><form>
-          <select id="timezone" name="timezone">
-            @foreach($timezones as $tz)
-              <option value="{{$tz}}" {{($tz==$timezone) ? "selected=selected" : ""}}>{{$tz}}</option>
-            @endforeach
-          </select>  |
-          <label for="gridsquare">Grid Square</label>
-          <input type="text" id="gridsquare" name="gridsquare" value="{{$gridsquare}}" maxlength=6>
-          <input type="button" onclick="getGridSquare()" value="Get Grid Square" />
-        |
-          <label for="hours_ahead">Hours to Look Ahead</label>
-          <select id="hours_ahead" name="hours_ahead">
-            @for($h = 1; $h < 24; $h++)
-              <option value="{{$h}}" {{($h==$hoursAhead) ? "selected=selected" : ""}}>{{$h}}</option>
-            @endfor
-          </select> <!--|
-          <select id="license_class" name="license_class">
-            @foreach($licenseClasses as $lc)
-              <option value="{{$lc}}" {{($lc==$licenseClass) ? "selected=selected" : ""}}>{{$lc}}</option>
-            @endforeach
-          </select> --> |
-          @foreach($bands as $band)
-            <input type="checkbox" id="band_{{$band}}" name="bands[]" value="{{$band}}" {{in_array($band, $selectedBands) ? "checked=checked" : ""}}>
-            <label for="band_{{$band}}">{{$band}}</label>&nbsp;
+    <div id="filters">
+      <form>
+        <label for="timezone">Display Timezone</label>
+        <select id="timezone" name="timezone">
+          @foreach($timezones as $tz)
+            <option value="{{$tz}}" {{($tz==$timezone) ? "selected=selected" : ""}}>{{$tz}}</option>
           @endforeach
-          <input type="submit" value="Update">
-        </form>
-      </div>
-
+        </select>
+        <hr>
+        <label for="gridsquare">Grid Square</label>
+        <input type="text" id="gridsquare" name="gridsquare" value="{{$gridsquare}}" maxlength=6>
+        <input type="button" onclick="getGridSquare()" value="Get Grid Square" />
+        <hr>
+        <div>Bands</div>
+          <input type="checkbox" id="band_all" name="bands[]" value="all">
+          <label for="band_all">All</label>&nbsp;
+        @foreach($bands as $band)
+          <input type="checkbox" id="band_{{$band}}" name="bands[]" value="{{$band}}" {{in_array($band, $selectedBands) ? "checked=checked" : ""}}>
+          <label for="band_{{$band}}">{{$band}}</label>&nbsp;
+        @endforeach
+        <hr>
+        <label for="term">Search Term</label>
+        <input id="term" name="term" value="{{$term}}" />
+        <hr>
+        <input type="submit" value="Update">
+      </form>
     </div>
-    <div id="upcoming-nets">
-      <h2>Upcoming</h2>
-      <!--
-      <div class="freq-bar">
-        @foreach($NextNets as $Net)
-          @if(7125000 <= $Net->primary_frequency and $Net->primary_frequency <= 7300000)
-            <span class="freq" style="left: {{ (($Net->primary_frequency - 7125000)/(7300000 - 7125000))*800 }}px">{{$Net->format_primary_frequency()}}</span>
-          @endif
-        @endforeach
-      </div>
-      <div style="height:10px; border: 1px black solid;" class="freq-bar">
-        @foreach($NextNets as $Net)
-          @if(7125000 <= $Net->primary_frequency and $Net->primary_frequency <= 7300000)
-            <span class="freq freq-viz" style="left: {{ (($Net->primary_frequency - 7125000)/(7300000 - 7125000))*800 }}px">&nbsp;</span>
-          @endif
-        @endforeach
-      </div>
-      -->
-
-      <table>
-        <thead>
-          <tr>
-            <!--<th>Id</th>-->
-            <th>Name</th>
-            <th>Band</th>
-            <th>Frequency</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-          </tr>
-        </thead>
-        @foreach($NextNets as $Net)
-          <tr>
-            <!-- <td>{{$Net->net_id}}</td>-->
-            <td>{{$Net->name}}
-            @if (!empty($Net->url))
-              <small>(<a href="{{$Net->url}}">www</a>)</small>
-            @endif
-            <small>(<a href="{{route('net', $Net->net_id)}}">hnd</a>)</small>
-            </td>
-            <td>{{$Net->band}}</td>
-            <td class="frequency">{{$Net->format_primary_frequency()}}</td>
-            <td>{{$Net->start_time}}</td>
-            <td class="{{$Net->end_timestamp_is_estimated ? 'estimated' : ''}}" title="{{$Net->end_timestamp_is_estimated ? 'estimated end time' : ''}}">{{$Net->end_time}}</td>
-          </tr>
-        @endforeach
-      </table>
-    </div>
-    <div id="current-nets">
-      <h1>Current Nets</h1>
-      <table>
-        <thead>
-          <tr>
-            <!--<th>Id</th>-->
-            <th>Name</th>
-            <th>Band</th>
-            <th>Frequency</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-          </tr>
-        </thead>
-        @foreach($NowNets as $Net)
-          <tr>
-           <!--<td>{{$Net->net_id}}</td>-->
-            <td>{{$Net->name}}
-            @if (!empty($Net->url))
-              <small>(<a href="{{$Net->url}}">www</a>)</small>
-            @endif
-            <small>(<a href="{{route('net', $Net->net_id)}}">hnd</a>)</small>
-            </td>
-            <td>{{$Net->band}}</td>
-            <td class="frequency">{{$Net->format_primary_frequency()}}</td>
-            <td>{{$Net->start_time}}</td>
-            <td class="{{$Net->end_timestamp_is_estimated ? 'estimated' : ''}}" title="{{$Net->end_timestamp_is_estimated ? 'estimated end time' : ''}}">{{$Net->end_time}}</td>
-          </tr>
-        @endforeach
-      </table>
-    </div>
-
-    @if (!empty($CoverageNets))
-    <div id="coverage-nets">
-      <h2>Coverage Nets for {{$gridsquare}}</h2>
+    <div id="all-nets">
       <table class="nets">
         <thead>
           <tr>
@@ -294,7 +225,7 @@
           </tr>
         </thead>
         <tbody>
-          @foreach($CoverageNets as $Net)
+          @foreach($Nets as $Net)
             <tr class="{{$Net->active ? "" : "inactive"}}" title="{{$Net->active ? "" : "inactive"}}">
               <td class="net_id"><a href="{{route('net', $Net->net_id)}}">{{$Net->net_id}}</a></td>
               <td>{{$Net->name}}
@@ -311,52 +242,31 @@
                     <small class="url"><a href="http://www.arrl.org/webroot/resources/nets/client/netdetail.html?mfind={{$Net->arrl_net_id}}">(ARRL)</a></small>
                   @endif
                 @endif
-                @if($Net->arrl_national_traffic_affiliated))
+                @if($Net->national_traffic_affiliated))
                   <br>
                   <small class="national_traffic_affiliated"><abbr title="National Traffic System">NTS</abbr></small>
                 @endif
                 <td>{{$Net->band}}
-                  <td class="frequency">{{$Net->format_primary_frequency()}}
-                    @if (!empty($Net->primary_frequency_repeaterbook_url()))
-                      (<a href="{{$Net->primary_frequency_repeaterbook_url()}}"><abbr title="RepeaterBook">RB</abbr></a>)
-                    @endif
-                    @if(!empty($Net->secondary_frequency))
-                      <br>
-                      {{$Net->format_secondary_frequency()}}
-                      @if (!empty($Net->secondary_frequency_repeaterbook_url()))
-                        (<a href="{{$Net->secondary_frequency_repeaterbook_url()}}"><abbr title="RepeaterBook">RB</abbr></a>)
-                      @endif
-                    @endif </td>
+                <td class="frequency">{{$Net->format_primary_frequency()}}
+                  @if(!empty($Net->secondary_frequency))
+                    <br>
+                    {{$Net->format_secondary_frequency()}}
+                  @endif </td>
                 <td>{{$Net->start_time}}</td>
                 <td>{{$Net->end_time}}</td>
                 <td>{{$Net->timezone}}</td>
-                <td>{!!$Net->sunday     ? '<abbr title="Sunday">S</abbr>' : "" !!} </td>
-                <td>{!!$Net->monday     ? '<abbr title="Monday">M</abbr>' : "" !!} </td>
-                <td>{!!$Net->tuesday    ? '<abbr title="Tuesday">T</abbr>' : "" !!} </td>
-                <td>{!!$Net->wednesday  ? '<abbr title="Wednesday">W</abbr>' : "" !!} </td>
-                <td>{!!$Net->thursday   ? '<abbr title="Thursday">H</abbr>' : "" !!} </td>
-                <td>{!!$Net->friday     ? '<abbr title="Friday">F</abbr>' : "" !!} </td>
-                <td>{!!$Net->saturday   ? '<abbr title="Saturday">A</abbr>' : "" !!} </td>
+                <td>{{$Net->sunday     ? "S" : "" }} </td>
+                <td>{{$Net->monday     ? "M" : "" }} </td>
+                <td>{{$Net->tuesday    ? "T" : "" }} </td>
+                <td>{{$Net->wednesday  ? "W" : "" }} </td>
+                <td>{{$Net->thursday   ? "H" : "" }} </td>
+                <td>{{$Net->friday     ? "F" : "" }} </td>
+                <td>{{$Net->saturday   ? "A" : "" }} </td>
             </tr>
           @endforeach
         </tbody>
       </table>
     </div>
-    @endif
-
-    <div id="solar">
-      <div>
-        <h1>Solar Activity</h1>
-        <center>
-          <a href="http://www.hamqsl.com/solar.html" title="Click to add Solar-Terrestrial Data to your website!"><img src="http://www.hamqsl.com/solar101vhfpic.php"></a>
-        </center>
-
-        <center>
-          <a href="http://www.hamqsl.com/solar.html" title="Click to add Solar-Terrestrial Data to your website!"><img src="http://www.hamqsl.com/solarmuf.php"></a>
-        </center>
-      </div>
-    </div>
-
     <div id="footer">
       <div><a href="mailto:info@hamnets.org">Contact</a></div>
       <div>Please reach out to update or add nets, or to suggest features.</a>
@@ -369,5 +279,6 @@
           <li><a href="http://repeaterbook.com">RepeaterBook</a></li>
         </ul>
     </div>
+
   </body>
-</html>
+</title>

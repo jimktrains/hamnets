@@ -34,7 +34,7 @@
   </head>
   <body>
     <div id="header">
-      <a href="{{route('home')}}">Home</a>
+      <a href="{{route('home')}}">Home</a> | <a href="{{route('net.index')}}">Net Index</a>
     </div>
     <div id="net">
       <h1>{{$Net->name}}</h1>

@@ -41,19 +41,16 @@ Route::get('/csv', function (Request $Request) {
 
 Route::get('/net/{net_id}/tiles/{x}/{y}/{z}', function (Request $Request, $net_id, $x, $y, $z) {
   $Net = Net::where('net_id', $net_id)->first();
-  if (empty($Net))
-  {
+  if (empty($Net)) {
     throw new ModelNotFoundException;
   }
-  $gridsquare = $Request->input("gridsquare", $Request->session()->get("gridsquare"));
 
-  return $Net->getTile($x, $y, $z, $gridsquare);
+  return $Net->getTile($x, $y, $z);
 })->name('net_map_tile');
 
 Route::get('/net/{net_id}', function (Request $Request, $net_id) {
   $Net = Net::where('net_id', $net_id)->first();
-  if (empty($Net))
-  {
+  if (empty($Net)) {
     throw new ModelNotFoundException;
   }
 
@@ -61,8 +58,70 @@ Route::get('/net/{net_id}', function (Request $Request, $net_id) {
       'net',
       compact('Net')
   );
-
 })->name('net');
+
+Route::get('/net', function (Request $Request) {
+
+  $timezone = $Request->input("timezone", $Request->session()->get("timezone", "America/New_York"));
+  $Request->session()->put("timezone", $timezone);
+
+  $gridsquare = $Request->input("gridsquare", $Request->session()->get("gridsquare"));
+  if (!empty($gridsquare)) {
+    $Request->session()->put("gridsquare", $gridsquare);
+  }
+
+  $selectedBands = $Request->input('bands', $Request->session()->get('bands', []));
+  if (in_array('all', $selectedBands)) {
+    $selectedBands = [];
+  }
+  $Request->session()->put('bands', $selectedBands);
+
+  $bands = Band::havingNets()->get()->pluck('name');
+  $filterBand = function ($query, $selectedBands) {
+    return $query->whereIn('band', $selectedBands);
+  };
+
+  $term = $Request->input('term');
+
+  $timezones = [
+      'UTC',
+      'America/New_York',
+      'America/Chicago',
+      'America/Denver',
+      'America/Phoenix',
+      'America/Los_Angeles',
+      'America/Nome',
+      'Pacific/Honolulu',
+  ];
+
+
+  $Nets = Net::when($selectedBands, $filterBand);
+
+  if (!empty($gridsquare)) {
+    $Nets = $Nets->whereGridSquare($gridsquare);
+  }
+
+  if (!empty($term)) {
+    $Nets = $Nets->searchName($term);
+  } else {
+    $Nets = $Nets->orderInTz($timezone);
+  }
+
+  $Nets = $Nets->get();
+
+  return view(
+      'netindex',
+      compact(
+          'Nets',
+          'timezones',
+          'timezone',
+          'gridsquare',
+          'bands',
+          'selectedBands',
+          'term'
+      )
+  );
+})->name('net.index');
 
 Route::get('/', function (Request $Request) {
   $timezone = $Request->input("timezone", $Request->session()->get("timezone", "America/New_York"));
@@ -125,7 +184,7 @@ Route::get('/', function (Request $Request) {
 
   $CoverageNets = null;
   if (!empty($gridsquare)) {
-    $CoverageNets = Net::whereGridSquare('EN90xj')
+    $CoverageNets = Net::whereGridSquare($gridsquare)
                     ->get();
   }
 

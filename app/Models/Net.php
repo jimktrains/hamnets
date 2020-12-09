@@ -17,6 +17,12 @@ class Net extends Model
     return $query->orderByRaw("extract(hour from (current_date + start_time) at time zone timezone at time zone ?)", $timezone);
   }
 
+  public function scopeSearchName($query, $term)
+  {
+    return $query->whereRaw('name <-> ?::text < 0.9', $term)
+                 ->orderByRaw('name <-> ?::text', $term);
+  }
+
   public function scopeWhereGridSquare($query, $gridsquare)
   {
     return $query->selectRaw("distinct on (netwithband.net_id) netwithband.*")
@@ -30,7 +36,7 @@ class Net extends Model
         ->orderBy('netwithband.net_id');
   }
 
-  public function getTile($zoom, $x, $y, $gridsquare)
+  public function getTile($zoom, $x, $y)
   {
     $res = DB::select("
     WITH mvtgeom AS
