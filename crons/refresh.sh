@@ -1,3 +1,3 @@
 #!/bin/sh
 
-echo "refresh materialized view nextnet" | psql hamnets
+echo "refresh materialized view netschedule" | psql hamnets

@@ -5,12 +5,31 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class Net extends Model
 {
-  protected $table = "netwithband";
+  protected $table = "net";
   protected $primaryKey = 'net_id';
     use HasFactory;
+
+  /**
+   * The "booting" method of the model.
+   *
+   * @return void
+   */
+  protected static function boot()
+  {
+    parent::boot();
+
+    static::addGlobalScope('band', function (Builder $builder) {
+      return $builder->addSelect('net.*')
+                     ->addSelect('band.name as band')
+                     ->join('band', function ($query) {
+                       return $query->whereRaw('primary_frequency <@ frequencies');
+                     });
+    });
+  }
 
   public function scopeOrderInTz($query, $timezone)
   {
@@ -19,8 +38,13 @@ class Net extends Model
 
   public function scopeSearchName($query, $term)
   {
-    return $query->whereRaw('name <-> ?::text < 0.9', $term)
-                 ->orderByRaw('name <-> ?::text', $term);
+    return $query
+                 ->addSelect(DB::raw('ts_rank_cd(name_tsvector, query) rank'))
+                 ->crossJoin(DB::raw("websearch_to_tsquery('english', ?) query"))
+                 ->whereRaw('name_tsvector @@ query')
+                 ->orderBy('rank')
+                 ->setBindings([$term]);
+
   }
 
   public function scopeWhereGridSquare($query, $gridsquare)
