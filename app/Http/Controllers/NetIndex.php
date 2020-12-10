@@ -11,35 +11,23 @@ class NetIndex extends Controller
 
   function index(Request $Request)
   {
-    $timezone = $Request->input("timezone", $Request->session()->get("timezone", "America/New_York"));
-    $Request->session()->put("timezone", $timezone);
-
-    $gridsquare = $Request->input("gridsquare", $Request->session()->get("gridsquare"));
-    $Request->session()->put("gridsquare", $gridsquare);
-
-    $selectedBands = $Request->input('bands', []);
-    if (in_array('all', $selectedBands)) {
-      $selectedBands = [];
-    }
-    $Request->session()->put('bands', $selectedBands);
-
-    $bands = Band::havingNets()->get()->pluck('name');
+    $timezone = $Request->session()->get("timezone");
+    $gridsquare = $Request->session()->get("gridsquare");
+    $selectedBands = $Request->session()->get('bands');
 
     $term = $Request->input('term');
 
-    $timezones = [
-        'UTC',
-        'America/New_York',
-        'America/Chicago',
-        'America/Denver',
-        'America/Phoenix',
-        'America/Los_Angeles',
-        'America/Nome',
-        'Pacific/Honolulu',
-    ];
+    $searchFreq = null;
+    if (is_numeric(str_replace(' ', '', $term))) {
+      $searchFreq = floatval(str_replace(' ', '', $term));
+      if (log10($searchFreq) < 7) {
+        $searchFreq *= pow(10, 7 - ceil(log10($searchFreq)));
+      }
 
+      $term = null;
+    }
 
-    $Nets = NetModel::filterBand($selectedBands);
+    $Nets = NetModel::filterBand($selectedBands)->searchFrequency($searchFreq);
 
     if (!empty($gridsquare)) {
       $Nets = $Nets->whereGridSquare($gridsquare);
@@ -57,11 +45,6 @@ class NetIndex extends Controller
         'netindex',
         compact(
             'Nets',
-            'timezones',
-            'timezone',
-            'gridsquare',
-            'bands',
-            'selectedBands',
             'term'
         )
     );

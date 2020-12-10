@@ -25,8 +25,7 @@ class Net extends Controller
     if (empty($Net)) {
       throw new ModelNotFoundException;
     }
-
-    $timezone = $Request->session()->get("timezone", "America/New_York");
+    $timezone = $Request->session()->get('timezone');
 
     return view(
         'net',

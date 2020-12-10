@@ -35,6 +35,18 @@ class Net extends Model
     });
   }
 
+  public function scopeSearchFrequency($query, $frequency, $boundPercent =  0.001) {
+    if (empty($frequency)) {
+      return;
+    }
+
+    list($u, $l) = $bounds = [(1-$boundPercent) * $frequency, (1+$boundPercent) * $frequency];
+    return $query->where(function ($query) use ($frequency, $bounds) {
+      return $query->whereBetween('primary_frequency', $bounds)
+                   ->orWhereBetween('secondary_frequency', $bounds);
+    })->orderByRaw('least(abs(primary_frequency - ?), abs(secondary_frequency - ?))', [$frequency, $frequency]);
+  }
+
   public function scopeOrderInTz($query, $timezone)
   {
     return $query->orderByRaw("extract(hour from (current_date + start_time) at time zone timezone at time zone ?)", $timezone);

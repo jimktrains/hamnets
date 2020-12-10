@@ -11,17 +11,12 @@ class Welcome extends Controller
 {
   public function index(Request $Request)
   {
-    $timezone = $Request->input("timezone", $Request->session()->get("timezone", "America/New_York"));
-    $Request->session()->put("timezone", $timezone);
-
-    $gridsquare = $Request->input("gridsquare", $Request->session()->get("gridsquare"));
-    $Request->session()->put("gridsquare", $gridsquare);
+    $timezone = $Request->session()->get("timezone", "America/New_York");
+    $gridsquare = $Request->session()->get("gridsquare");
+    $selectedBands = $Request->session()->get('bands');
 
     $hoursAhead = $Request->input('hours_ahead', $Request->session()->get("hours_ahead", 1));
     $Request->session()->put("hours_ahead", $hoursAhead);
-
-    $selectedBands = $Request->input('bands', []);
-    $Request->session()->put('bands', $selectedBands);
 
     $timezones = [
         'UTC',
@@ -44,7 +39,6 @@ class Welcome extends Controller
     ];
     $licenseClass = $Request->input('license_class', 'Any');
 
-    $bands = Band::havingNets()->get()->pluck('name');
 
 
 
@@ -78,14 +72,8 @@ class Welcome extends Controller
             'NextNets',
             'NowNets',
             'CoverageNets',
-            'gridsquare',
-            'timezone',
-            'timezones',
             'hoursAhead',
-            'licenseClasses',
-            'licenseClass',
-            'bands',
-            'selectedBands'
+            'gridsquare'
         )
     );
   }

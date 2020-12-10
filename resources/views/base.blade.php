@@ -14,10 +14,12 @@
         margin-top: 20px;
         border-top: 1px black solid;
       }
-      #footer {
+
+      footer {
         margin-top: 20px;
         border-top: 1px black solid;
       }
+
       .inactive {
         color: darkslategrey;
       }
@@ -86,6 +88,20 @@
       td.band {
         text-align: center;
         max-width: 4em;
+      }
+
+      header {
+        border-bottom: 1px black solid;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+      }
+
+      nav {
+        display: inline;
+      }
+
+      header form {
+        display: inline;
       }
     </style>
     <script>
@@ -180,19 +196,39 @@
         getLocation(showGridSquare, errorGridSquare);
         return false;
       }
+      function clearGridsquare() {
+        var gridsquareinput = document.getElementById("gridsquare");
+        gridsquareinput.value = '';
+        return false;
+      }
     </script>
     @stack('scripts')
   </head>
   <body>
-    <div id="header">
-      <a href="{{route('home')}}">Home</a> | <a href="{{route('net.index')}}">Net Index</a>
-    </div>
+    <header>
+      <nav>
+        <a href="{{route('home')}}">{{trans('common.homepage')}}</a> | <a href="{{route('net.index')}}">{{trans('common.net_index')}}</a>
+      </nav> |
+        <form action="{{route('net.index')}}">
+          <label for="header-term">{{trans('common.search_term')}}</label>
+          <input type="text" name="term" id="header-term" />
+          <input type="submit" value="{{trans('common.search')}}" />
+        </form>
+      <hr>
+      <form>
+        <x-sort-timezone />
+        <x-gridsquare-filter />
+        <br>
+        <x-band-filter />
+        <input type="submit" value="{{trans('common.update')}}" />
+      </form>
+    </header>
 
     @yield('content')
 
-    <div id="footer">
-      <div><a href="mailto:info@hamnets.org">Contact</a></div>
-      <div>{{trans('common.reach_out')}}</div>
+    <footer>
+      <div><a href="mailto:info@hamnets.org">Contact</a> - {{trans('common.reach_out')}}</div>
+      <div><a href="https://github.com/jimktrains/hamnets/">GitHub</a> - {{trans('common.code_contribute')}}</div>
       <hr>
       <div>
         <h1>{{trans('common.other_resources')}}</h1>
@@ -201,7 +237,7 @@
           <li><a href="http://www.arrl.org/resources/nets/">ARRL ONLINE NET DIRECTORY</a></li>
           <li><a href="http://repeaterbook.com">RepeaterBook</a></li>
         </ul>
-    </div>
+    </footer>
   </body>
 </html>
 
