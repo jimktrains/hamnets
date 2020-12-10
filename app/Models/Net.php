@@ -47,7 +47,7 @@ class Net extends Model
                  ->crossJoin(DB::raw("websearch_to_tsquery('english', ?) query"))
                  ->whereRaw('name_tsvector @@ query')
                  ->orderBy('rank')
-                 ->setBindings([$term]);
+                 ->addBinding($term,'join');
 
   }
 
