@@ -25,7 +25,7 @@ coalesce(x_1.d + net.end_time + make_interval(days := (net.start_time > net.end_
 from net
 cross join
   (select current_date + make_interval(days => s.i) as d
-   from generate_series(0, 6) s(i)) x_1
+   from generate_series(-1, 6) s(i)) x_1
 where (net.sunday and date_part('dow', x_1.d) = 0)
    or (net.monday and date_part('dow', x_1.d) = 1)
    or (net.tuesday and date_part('dow', x_1.d) = 2)
