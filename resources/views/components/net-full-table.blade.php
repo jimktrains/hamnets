@@ -34,7 +34,10 @@
               <br>
               <small class="national_traffic_affiliated"><a href="http://www.arrl.org/nts"><abbr title="{{trans('common.nts')}}">NTS</abbr></a></small>
             @endif
-            <td>{{$Net->band}}
+            <td class="band">{{$Net->primary_band}}
+              @if ($Net->secondary_band)
+                <br>{{$Net->secondary_band}}
+              @endif</td>
               <td class="frequency">{{$Net->format_primary_frequency()}}
                 @if (!empty($Net->primary_frequency_repeaterbook_url()))
                   (<a href="{{$Net->primary_frequency_repeaterbook_url()}}"><abbr title="RepeaterBook">RB</abbr></a>)
@@ -46,8 +49,8 @@
                     (<a href="{{$Net->secondary_frequency_repeaterbook_url()}}"><abbr title="RepeaterBook">RB</abbr></a>)
                   @endif
                 @endif </td>
-              <td>{{$Net->start_time}}</td>
-              <td>{{$Net->end_time}}</td>
+              <td class="time">{{$Net->start_time ? date('H:i', strtotime($Net->start_time)) : ""}}</td>
+              <td class="time">{{$Net->end_time ? date('H:i', strtotime($Net->end_time)) : ""}}</td>
               <td>{{$Net->timezone}}</td>
               <td>{!!$Net->sunday     ? '<abbr title="'.trans('common.sunday').'">'.trans('common.sunday_short').'</abbr>' : "" !!} </td>
               <td>{!!$Net->monday     ? '<abbr title="'.trans('common.monday').'">'.trans('common.monday_short').'</abbr>' : "" !!} </td>

@@ -17,16 +17,13 @@ class NetIndex extends Controller
     $gridsquare = $Request->input("gridsquare", $Request->session()->get("gridsquare"));
     $Request->session()->put("gridsquare", $gridsquare);
 
-    $selectedBands = $Request->input('bands', $Request->session()->get('bands', []));
+    $selectedBands = $Request->input('bands', []);
     if (in_array('all', $selectedBands)) {
       $selectedBands = [];
     }
     $Request->session()->put('bands', $selectedBands);
 
     $bands = Band::havingNets()->get()->pluck('name');
-    $filterBand = function ($query, $selectedBands) {
-      return $query->whereIn('band', $selectedBands);
-    };
 
     $term = $Request->input('term');
 
@@ -42,7 +39,7 @@ class NetIndex extends Controller
     ];
 
 
-    $Nets = NetModel::when($selectedBands, $filterBand);
+    $Nets = NetModel::filterBand($selectedBands);
 
     if (!empty($gridsquare)) {
       $Nets = $Nets->whereGridSquare($gridsquare);

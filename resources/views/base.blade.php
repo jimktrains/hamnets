@@ -70,6 +70,23 @@
       #all-nets {
         clear: both;
       }
+
+      span.frequency {
+        font-size: 1.1em;
+      }
+
+      td.frequency {
+        min-width: 10em;
+      }
+
+      td.time {
+        text-align: center;
+      }
+
+      td.band {
+        text-align: center;
+        max-width: 4em;
+      }
     </style>
     <script>
       // HamGridSquare.js

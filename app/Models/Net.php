@@ -24,9 +24,13 @@ class Net extends Model
 
     static::addGlobalScope('band', function (Builder $builder) {
       return $builder->addSelect('net.*')
-                     ->addSelect('band.name as band')
-                     ->join('band', function ($query) {
-                       return $query->whereRaw('primary_frequency <@ frequencies');
+                     ->addSelect('pband.name as primary_band')
+                     ->addSelect('sband.name as secondary_band')
+                     ->leftJoin(DB::raw('band pband'), function ($query) {
+                       return $query->whereRaw('primary_frequency <@ pband.frequencies');
+                     })
+                     ->leftJoin(DB::raw('band sband'), function ($query) {
+                       return $query->whereRaw('secondary_frequency <@ sband.frequencies');
                      });
     });
   }
@@ -47,17 +51,46 @@ class Net extends Model
 
   }
 
+  public function hasCoverage()
+  {
+    return ($this->Coverage()->count() > 0) ||
+      !empty($this->primary_repeater_gridsquare) ||
+      !empty($this->secondary_repeater_gridsquare);
+  }
+
   public function scopeWhereGridSquare($query, $gridsquare)
   {
-    return $query->selectRaw("distinct on (netwithband.net_id) netwithband.*")
-        ->leftJoin('coverage', 'coverage.net_id', '=', 'netwithband.net_id')
+    return $query->selectRaw("distinct on (net.net_id) net.*")
+        ->leftJoin('coverage', 'coverage.net_id', '=', 'net.net_id')
         ->leftJoin('gadm36', function ($join) use ($gridsquare) {
           $join->on('gadm36.gid', '=', 'coverage.gid')->whereRaw("gadm36.geom && maidenhead2bbox(?)", $gridsquare);
         })
         ->OrWhereNotNull("gadm36.gid")
         ->OrWhereRaw("st_buffer(maidenhead2centroid(primary_repeater_gridsquare), 1.0, 16) && maidenhead2bbox(?)", $gridsquare)
         ->OrWhereRaw("st_buffer(maidenhead2centroid(secondary_repeater_gridsquare), 1.0, 16) && maidenhead2bbox(?)", $gridsquare)
-        ->orderBy('netwithband.net_id');
+        ->orderBy('net.net_id');
+  }
+
+  public function scopeFilterBand($query, $selectedBands)
+  {
+      if ($selectedBands) {
+        return $query->whereIn('pband.name', $selectedBands)
+                     ->orWhereIn('sband.name', $selectedBands);
+      }
+  }
+
+  public function schedule($timezone)
+  {
+    return DB::table("netschedule")
+              ->addSelect('net_id')
+              ->selectRaw('start_timestamp at time zone ? as start_timestamp', [$timezone])
+              ->selectRaw("coalesce(start_timestamp - (lag(start_timestamp) over ordered) <= '1 day'::interval, false) as prev_day")
+              ->selectRaw("coalesce(((lead(start_timestamp) over ordered) - start_timestamp) <= '1 day'::interval, false) as next_day")
+              ->where('net_id', '=', $this->net_id)
+              // Not sure how to get this in otherwise?
+              ->whereRaw('1=1 window ordered as (partition by net_id order by start_timestamp asc)')
+              ->orderBy('start_timestamp')
+              ->get();
   }
 
   public function getTile($zoom, $x, $y)

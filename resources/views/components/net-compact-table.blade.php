@@ -19,7 +19,7 @@
             @endif
             <small>(<a href="{{route('net', $Net->net_id)}}">hnd</a>)</small>
             </td>
-            <td>{{$Net->band}}</td>
+            <td>{{$Net->primary_band}}</td>
             <td class="frequency">{{$Net->format_primary_frequency()}}</td>
             <td>{{$Net->local_start_time}}</td>
             <td class="{{$Net->end_timestamp_is_estimated ? 'estimated' : ''}}" title="{{$Net->end_timestamp_is_estimated ? trans('common.estimated_end_time') : ''}}">{{$Net->local_end_time}}</td>

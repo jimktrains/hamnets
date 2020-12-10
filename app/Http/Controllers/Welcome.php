@@ -20,7 +20,7 @@ class Welcome extends Controller
     $hoursAhead = $Request->input('hours_ahead', $Request->session()->get("hours_ahead", 1));
     $Request->session()->put("hours_ahead", $hoursAhead);
 
-    $selectedBands = $Request->input('bands', $Request->session()->get('bands', []));
+    $selectedBands = $Request->input('bands', []);
     $Request->session()->put('bands', $selectedBands);
 
     $timezones = [
@@ -47,29 +47,27 @@ class Welcome extends Controller
     $bands = Band::havingNets()->get()->pluck('name');
 
 
-    $filterBand = function ($query, $selectedBands) {
-      return $query->whereIn('band', $selectedBands);
-    };
 
-    $Nets = Net::when($selectedBands, $filterBand)
+    $Nets = Net::filterBand($selectedBands)
       ->orderInTz($timezone)
       ->get();
 
     $NextNets = NextNet::forTz($timezone)
       ->upcoming($hoursAhead)
-      ->when($selectedBands, $filterBand)
+      ->filterBand($selectedBands)
       ->orderby('start_timestamp')
       ->get();
 
     $NowNets = NextNet::forTz($timezone)
       ->ongoing()
-      ->when($selectedBands, $filterBand)
+      ->filterBand($selectedBands)
       ->orderby('primary_frequency')
       ->get();
 
     $CoverageNets = null;
     if (!empty($gridsquare)) {
       $CoverageNets = Net::whereGridSquare($gridsquare)
+        ->filterBand($selectedBands)
         ->get();
     }
 

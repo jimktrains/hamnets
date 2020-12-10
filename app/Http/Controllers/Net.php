@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Net as NetModel;
 use App\Models\Band;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Net extends Controller
 {
@@ -25,9 +26,11 @@ class Net extends Controller
       throw new ModelNotFoundException;
     }
 
+    $timezone = $Request->session()->get("timezone", "America/New_York");
+
     return view(
         'net',
-        compact('Net')
+        compact('Net', 'timezone')
     );
   }
 }
