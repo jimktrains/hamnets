@@ -20,8 +20,6 @@ class NetIndex extends Controller
     $searchFreq = null;
     if (is_numeric(str_replace(' ', '', $term))) {
       $searchFreq = floatval(str_replace(' ', '', $term));
-      var_dump($searchFreq);
-      var_dump(log10($searchFreq));
       // Probably something in MHz like 7.255 or 147.090
       if (log10($searchFreq) < 3) {
         $searchFreq *= pow(10, 6);
@@ -30,7 +28,6 @@ class NetIndex extends Controller
       else if (log10($searchFreq) < 6) {
         $searchFreq *= pow(10, 3);
       }
-      var_dump($searchFreq);
 
       $term = null;
     }
