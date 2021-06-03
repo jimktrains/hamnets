@@ -236,6 +236,7 @@
           <li><a href="https://docs.google.com/spreadsheets/d/1cpaIUPJOG9Kdb0Xo-hyzhcVKcyvOr37vrGIF1mIETHs/edit#gid=906307814">N1YZ HF NET_LIST</a></li>
           <li><a href="http://www.arrl.org/resources/nets/">ARRL ONLINE NET DIRECTORY</a></li>
           <li><a href="http://repeaterbook.com">RepeaterBook</a></li>
+          <li><a href="http://netlogger.com">NetLogger</a></li>
         </ul>
     </footer>
   </body>
