@@ -66,7 +66,7 @@ class Welcome extends Controller
     $NetLoggerLogs = NetLoggerLog::current($timezone, $selectedBands)->get();
 
     if (!empty($NetLoggerLogs)) {
-      $NowNets = $NowNets->concat($NetLoggerLogs);
+      $NowNets = $NowNets->concat($NetLoggerLogs)->sortBy('primary_frequency');
     }
 
     return view(
