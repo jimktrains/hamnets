@@ -108,7 +108,7 @@ class FetchActiveNets extends Command
             $CheckIns = simplexml_load_string($body);
             $err = (string) $CheckIns->Error;
             if (!empty($err)) {
-              $msg = "Error getting checkins: " . $err . " " . json_encode($formParams);
+              $msg = "Error getting checkins: " . $err . " " . json_encode($query);
               Log::error($msg);
               $this->error($msg);
               continue;
