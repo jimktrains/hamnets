@@ -16,12 +16,19 @@
             <!-- <td>{{$Net->net_id}}</td>-->
             <td>{{$Net->name}}
             @if (!empty($Net->url))
-              <small>(<a href="{{$Net->url}}">www</a>)</small>
+              <small>(<a href="{{$Net->url}}" title="Link to net website">www</a>)</small>
             @else
-              <small>(<a href="https://google.com?q={{$Net->name}}">G</a> | <a href="https://duckduckgo.com?q={{$Net->name}}">D</a>)</small>
+              <small>(
+                <a href="https://google.com?q={{$Net->name}}" title="Google Search for the net name">G</a>
+                |
+                <a href="https://duckduckgo.com?q={{$Net->name}}" title="DuckDuckGo Search for the net name">D</a>
+              )</small>
             @endif
             @if (!empty($Net->net_id))
-              <small>(<a href="{{route('net', $Net->net_id)}}">hnd</a>)</small>
+              <small>(<a href="{{route('net', $Net->net_id)}}" title="HamNet Database Link">hnd</a>)</small>
+            @endif
+            @if (!empty($Net->Frequency_raw))
+              <small>(<abbr title="via NetLogger">NL</abbr>)</small>
             @endif
             </td>
             <td>{{$Net->primary_band}}</td>

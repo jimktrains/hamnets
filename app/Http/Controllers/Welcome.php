@@ -65,6 +65,10 @@ class Welcome extends Controller
 
     $NetLoggerLogs = NetLoggerLog::current($timezone, $selectedBands)->get();
 
+    if (!empty($NetLoggerLogs)) {
+      $NowNets = $NowNets->concat($NetLoggerLogs);
+    }
+
     return view(
         'welcome',
         compact(
