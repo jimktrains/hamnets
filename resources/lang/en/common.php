@@ -21,6 +21,7 @@ return [
   'intended_coverage'   => 'Intended Coverage',
   'name'                => 'Name',
   'net_index'           => 'Net Index',
+  'netlogger'           => 'NetLogger',
   'nts'                 => 'National Traffic System',
   'operating_days'      => 'Operating Days',
   'other_resources'     => 'Other Resources',

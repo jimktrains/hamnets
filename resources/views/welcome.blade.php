@@ -40,6 +40,10 @@
     <div id="current-nets">
       <h1>{{trans('common.current')}}</h1>
       <x-net-compact-table :nets="$NowNets" />
+      @if (!empty($NetLoggerLogs))
+        <h1>{{trans('common.netlogger')}}</h1>
+        <x-net-compact-table :nets="$NetLoggerLogs" />
+      @endif
     </div>
 
     @if (!empty($CoverageNets))

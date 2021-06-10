@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Net;
+use App\Models\NetLoggerLog;
 use App\Models\NextNet;
 use App\Models\Band;
 
@@ -39,9 +40,6 @@ class Welcome extends Controller
     ];
     $licenseClass = $Request->input('license_class', 'Any');
 
-
-
-
     $Nets = Net::filterBand($selectedBands)
       ->orderInTz($timezone)
       ->get();
@@ -65,6 +63,8 @@ class Welcome extends Controller
         ->get();
     }
 
+    $NetLoggerLogs = NetLoggerLog::current($timezone, $selectedBands)->get();
+
     return view(
         'welcome',
         compact(
@@ -73,7 +73,8 @@ class Welcome extends Controller
             'NowNets',
             'CoverageNets',
             'hoursAhead',
-            'gridsquare'
+            'gridsquare',
+            'NetLoggerLogs',
         )
     );
   }
