@@ -48,7 +48,7 @@ class NetLoggerLog extends Model
 
   public function format_primary_frequency()
   {
-    if (empty($this->primary_frequency)) {
+    if (!empty($this->primary_frequency)) {
      return static::format_frequency($this->primary_frequency);
     } else {
       return $this->Frequency_raw;
