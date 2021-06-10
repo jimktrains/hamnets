@@ -18,6 +18,7 @@ class NetLoggerLog extends Model
   {
     // The select is so that I can use it in the net template.
     $query = $query->selectRaw(join(',', ['*',
+      '"Mode" as mode',
       '"NetName" as name',
       '"Frequency" as primary_frequency',
       '"Date" as start_timestamp',

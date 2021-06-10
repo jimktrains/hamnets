@@ -6,6 +6,7 @@
         <th>{{trans('common.name')}}</th>
         <th>{{trans('common.band')}}</th>
         <th>{{trans('common.frequency')}}</th>
+        <th>{{trans('common.mode')}}</th>
         <th>{{trans('common.start_time')}}</th>
         <th>{{trans('common.end_time')}}</th>
         <th>{{trans('common.timezone')}}</th>
@@ -49,6 +50,7 @@
                     (<a href="{{$Net->secondary_frequency_repeaterbook_url()}}"><abbr title="RepeaterBook">RB</abbr></a>)
                   @endif
                 @endif </td>
+              <td>{{$Net->mode}}</td>
               <td class="time">{{$Net->start_time ? date('H:i', strtotime($Net->start_time)) : ""}}</td>
               <td class="time">{{$Net->end_time ? date('H:i', strtotime($Net->end_time)) : ""}}</td>
               <td>{{$Net->timezone}}</td>

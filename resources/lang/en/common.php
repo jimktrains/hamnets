@@ -19,6 +19,7 @@ return [
   'id'                  => 'Id',
   'inactive'            => 'Inactive',
   'intended_coverage'   => 'Intended Coverage',
+  'mode'                => 'Mode',
   'name'                => 'Name',
   'net_index'           => 'Net Index',
   'netlogger'           => 'NetLogger',
