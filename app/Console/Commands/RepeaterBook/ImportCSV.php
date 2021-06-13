@@ -40,6 +40,7 @@ class ImportCSV extends Command
     {
       DB::transaction(function () {
         $filename = $this->argument('csv');
+        $this->info("Importing $filename");
 
         $handle = fopen($filename, 'r');
         $current_line = [];
@@ -108,6 +109,15 @@ class ImportCSV extends Command
       ];
 
       $data['nets'] = trim(implode(',', $fields));
+
+      if ($data['last_update'] == '0000-00-00') {
+        $data['last_update'] = null;
+      }
+
+      if (empty($data['state'])) {
+        $this->error("Empty state: " . json_encode($data));
+        return;
+      }
 
       DB::table('repeaterbook_raw')->upsert($data, ['state', 'id']);
     }
