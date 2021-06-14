@@ -24,8 +24,8 @@
                 <a href="https://duckduckgo.com?q={{$Net->name}}" title="DuckDuckGo Search for the net name">D</a>
               )</small>
             @endif
-            @if (!empty($Net->repeaterbook_primary_url))
-              <small>(<a href="{{$Net->repeaterbook_primary_url}}" title="RepeaterBook Link">rb</a>)</small>
+            @if (false !== strpos($Net->primary_frequency_url, 'repeaterbook'))
+              <small>(<a href="{{$Net->primary_frequency_url}}" title="RepeaterBook Link">rb</a>)</small>
             @endif
             @if (!empty($Net->net_id))
               <small>(<a href="{{route('net', $Net->net_id)}}" title="HamNet Database Link">hnd</a>)</small>
