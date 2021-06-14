@@ -47,21 +47,26 @@ class Welcome extends Controller
     $NextNets = NextNet::forTz($timezone)
       ->upcoming($hoursAhead)
       ->filterBand($selectedBands)
-      ->orderby('start_timestamp')
-      ->get();
+      ->orderby('start_timestamp');
 
     $NowNets = NextNet::forTz($timezone)
       ->ongoing()
       ->filterBand($selectedBands)
-      ->orderby('primary_frequency')
-      ->get();
+      ->orderby('primary_frequency');
 
     $CoverageNets = null;
     if (!empty($gridsquare)) {
       $CoverageNets = Net::whereGridSquare($gridsquare)
         ->filterBand($selectedBands)
+        ->selectRaw("distinct on (net.net_id) net.*")
+        ->orderBy('net.net_id')
         ->get();
+
+      $NextNets = $NextNets->whereGridSquare($gridsquare);
+      $NowNets = $NowNets->whereGridSquare($gridsquare);
     }
+    $NextNets = $NextNets->get();
+    $NowNets = $NowNets->get();
 
     $NetLoggerLogs = NetLoggerLog::current($timezone, $selectedBands)->get();
 

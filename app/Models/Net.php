@@ -72,17 +72,16 @@ class Net extends Model
 
   public function scopeWhereGridSquare($query, $gridsquare)
   {
-    return $query->selectRaw("distinct on (net.net_id) net.*")
-                 ->leftJoin('coverage', 'coverage.net_id', '=', 'net.net_id')
+    return $query->leftJoin('coverage', 'coverage.net_id', '=', 'net.net_id')
                  ->leftJoin('gadm36', function ($join) use ($gridsquare) {
                    $join->on('gadm36.gid', '=', 'coverage.gid')->whereRaw("gadm36.geom && maidenhead2bbox(?)", $gridsquare);
                  })
                  ->where(function ($query) use ($gridsquare) {
                    return $query->whereNotNull("gadm36.gid")
+                                ->OrWhereNull('primary_repeater_gridsquare')
                                 ->OrWhereRaw("st_buffer(maidenhead2centroid(primary_repeater_gridsquare), 1.0, 16) && maidenhead2bbox(?)", $gridsquare)
                                 ->OrWhereRaw("st_buffer(maidenhead2centroid(secondary_repeater_gridsquare), 1.0, 16) && maidenhead2bbox(?)", $gridsquare);
-                 })
-                 ->orderBy('net.net_id');
+                 });
 
   }
 

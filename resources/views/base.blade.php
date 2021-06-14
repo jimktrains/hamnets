@@ -216,6 +216,7 @@
         </form>
       <hr>
       <form>
+        <div>Location and proximity are estimated.</div>
         <x-sort-timezone />
         <x-gridsquare-filter />
         <br>
