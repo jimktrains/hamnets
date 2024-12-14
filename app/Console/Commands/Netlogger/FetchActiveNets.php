@@ -42,8 +42,8 @@ class FetchActiveNets extends Command
     {
       // TODO: Handle errors. Maybe send me an email?
       $client = new GuzzleHttp\Client();
-      $res = $client->request('GET', 'http://www.netlogger.org/api/GetActiveNets.php', [
-        'http_errors' => true,
+      $res = $client->request('GET', 'https://www.netlogger.org/api/GetActiveNets.php', [
+        'https_errors' => true,
         'headers' => [
           'User-Agent' => 'hamnets.org',
         ],
@@ -97,12 +97,12 @@ class FetchActiveNets extends Command
               'NetName'    => (string) $Net->NetName,
             ];
             $client = new GuzzleHttp\Client();
-            $res = $client->request('GET', 'http://www.netlogger.org/api/GetCheckins.php', [
+            $res = $client->request('GET', 'https://www.netlogger.org/api/GetCheckins.php', [
               'query' => $query,
               'headers' => [
                 'User-Agent' => 'hamnets.org',
               ],
-              'http_errors' => true
+              'https_errors' => true
             ]);
             $body = $res->getBody();
             $CheckIns = simplexml_load_string($body);
